@@ -1,0 +1,65 @@
+Exercise:
+
+A research lab keeps track of all projects PhD students and lab technicians work on. This data consists of
+
+    Personnel number
+    Name
+    Date of birth
+    Lab code
+    Lab name
+    Research code
+    Research description
+    Research supervisor
+
+Normalise this data up to 3NF, taking in to account these constraints:
+
+    Each personnel number is unique
+    Each lab has a single lab code
+    Each research project has a single code and supervisor
+    Each member of the personnel may work on one or more research projects
+    Personnel names need not necessarily be unique
+    Research code, description and supervisor are repeating fields
+-------------------------------------------------------------------------------
+
+UNF 
+***
+laboratory(Personnel_number, Name, Birthdate, lab_code, lab_name, research_code, research_descr, research_superv)
+
+1NF (no repeating groups, all atomic values)
+***
+Personnel(Personnel_number, Name, Day-of-birth, lab_code, research_code)
+	candidate keys(Personnel_number)
+Laboratory(lab_ID, lab_name)
+	candidate keys(lab_ID)
+Research(research_ID, research_descr, research_superv)
+	candidate keys(research_ID)
+
+Laboratory and research groups were split up as these values can be linked to the same entity. Candidate keys were assigned possible integer values, which cannot be null and have to be filled in. Because the personnel_number only links to name and name links on their term to someone's birthdate. Labcode refers to the lab-name and research_code refers to research description and correlated supervisor.
+
+2NF
+***
+
+Non-key columns should be dependent on primary key
+
+Personnel(Personnel_number, Name)
+	candidate keys (Personnel_number)
+Birthdate(personnel_id, date-of-birth) - split because personnel number does not link to birthdate and several people could have the same birthdate, hence other column
+	candidate keys (personnel_id)
+Laboratory(lab_id, lab_name)
+	candidate keys (lab_id)
+Research(research_ID, research_descr, research_superv, supervisor_number)
+	candidate keys (research_ID)
+Join-table(supervisor_ID, research_ID) supervisors can have different projects
+
+3NF
+***
+
+Personnel(Personnel_number, Name)
+	candidate key(Personnel_number, Birthdate)
+Laboratory(lab_id, lab_name)
+	candidate key(lab_id)
+Research(research_ID, research_descr, supervisor_number)
+	candidate key(research_ID, supervisor_number)
+Supervisor(supervisor_ID, research_supervisor)
+	candiate key(supervisor_ID)
+Join-table(supervisor_ID, research_ID)
